@@ -74,7 +74,11 @@ namespace MindustryProcessorToFunctionTranslator {
                 return;
             }
 
-            string[] finishedFile = ProcessFile(sr);
+            // First word of file.
+            // TASK: create and use FirstWord() function.
+            string processorName = Path.GetFileNameWithoutExtension(filePath).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
+            
+            string[] finishedFile = ProcessFile(sr.ReadToEnd().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries), processorName);
 
             StreamWriter sw;
             try {
@@ -89,16 +93,14 @@ namespace MindustryProcessorToFunctionTranslator {
             WriteToFile(finishedFile, sw);
         }
 
-        private static string[] ProcessFile(StreamReader sr) {
-            string fileOneLine = sr.ReadToEnd();
-            string[] file = fileOneLine.ToLines();
+        private static string[] ProcessFile(string[] file, string processorName) {
             List<Jump> jumps = ParseJumps(file);
 
             if (jumps.Count == 0) {
                 return file;
             }
 
-            List<Label> labels = GetLabels(GetPointers(jumps));
+            List<Label> labels = GetLabels(GetPointers(jumps), processorName);
             string[] processedFile = ExpandFileTwice(file);
             foreach (var label in labels) {
                 processedFile[label.Location * 2] = label.LabelAsLabel;
@@ -130,11 +132,12 @@ namespace MindustryProcessorToFunctionTranslator {
 
             return outSet;
         }
-        private static List<Label> GetLabels(IEnumerable<int> labelsLocations) {
+        private static List<Label> GetLabels(IEnumerable<int> labelsLocations, string processorName) {
             List<Label> outList = new List<Label>(labelsLocations.Count());
             int i = 0;
             foreach (var labelLocation in labelsLocations) {
-                outList.Add(new Label(labelLocation, "Label" + i.ToString()));
+                string labelName = string.Concat(processorName, LabelName, i.ToString());
+                outList.Add(new Label(labelLocation, labelName));
                 i++;
             }
 
