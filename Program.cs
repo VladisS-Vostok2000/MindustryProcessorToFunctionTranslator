@@ -37,6 +37,7 @@ namespace MindustryProcessorToFunctionTranslator {
             }
 
             Console.WriteLine("Done.");
+            Console.ReadKey(false);
         }
 
 
@@ -44,6 +45,12 @@ namespace MindustryProcessorToFunctionTranslator {
         private static void ProcessAllFilesInDirectory(string directoryPath) {
             try {
                 foreach (string filePath in Directory.EnumerateFiles(directoryPath, "*" + ProcessedFileExtension)) {
+                    // For .net framework anomaly
+                    // See the https://learn.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles?view=net-7.0&redirectedfrom=MSDN#System_IO_Directory_EnumerateFiles_System_String_System_String_
+                    if (!filePath.EndsWith(ProcessedFileExtension)) {
+                        continue;
+                    }
+
                     ProcessFileInPath(filePath);
                 }
             }
