@@ -80,17 +80,8 @@ namespace MindustryProcessorToFunctionTranslator {
             
             string[] finishedFile = ProcessFile(sr.ReadToEnd().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries), processorName);
 
-            StreamWriter sw;
-            try {
-                sw = new StreamWriter(Path.GetFileNameWithoutExtension(filePath) + OutFileExtension);
-            }
-            catch (IOException ioe) {
-                Console.WriteLine($"Error with writing file. Check your rules.");
-                Console.WriteLine($"Error was {ioe.Message}.");
-                return;
-            }
-
-            WriteToFile(finishedFile, sw);
+            string fileName = Path.ChangeExtension(filePath, OutFileExtension);
+            WriteToFile(finishedFile, fileName);
         }
 
         private static string[] ProcessFile(string[] file, string processorName) {
@@ -190,7 +181,17 @@ namespace MindustryProcessorToFunctionTranslator {
         }
 
 
-        private static void WriteToFile(string[] sourse, StreamWriter sw) {
+        private static void WriteToFile(string[] sourse, string filePath) {
+            StreamWriter sw;
+            try {
+                sw = new StreamWriter(filePath);
+            }
+            catch (IOException ioe) {
+                Console.WriteLine($"Error with writing file. Check your rules.");
+                Console.WriteLine($"Error was {ioe.Message}.");
+                return;
+            }
+
             for (int i = 0; i < sourse.Length - 1; i++) {
                 string line = sourse[i];
                 sw.WriteLine(line.Trim());
