@@ -83,6 +83,7 @@ You just need to copy processor code to clipboard and paste it in file, and run 
 ## No arguments
 This programm can be run without arguments. This means, you can run it by `.exe` file.
 In that case, all `.min` files in its folder will be translated to `.minraw` files. `.min` files will not be removed or changed.
+Note when you call programm from console, the current folder will be determinated with current console folder.
 
 ## One parameter
 If you need to translate specific file or files in folder, you may run your terminal and cast its argument after path to `.exe` file.
